@@ -34,6 +34,7 @@ namespace ObjectDumping.Internal
         /// <param name="value">string to be written</param>
         protected void Write(string value)
         {
+            if (value == null) return;
             if (this.isNewLine)
             {
                 Write(value, Level);
@@ -55,7 +56,8 @@ namespace ObjectDumping.Internal
         /// <param name="indentLevel">number of indentions to prepend default 0</param>
         protected void Write(string value, int indentLevel = 0)
         {
-            this.stringBuilder.Append(this.DumpOptions.IndentChar, indentLevel * this.DumpOptions.IndentSize);
+            //if (indentLevel < 0)  indentLevel = 0;
+          if (this.DumpOptions.IndentChar!=null)  this.stringBuilder.Append(this.DumpOptions.IndentChar.Value, indentLevel * this.DumpOptions.IndentSize);
             this.stringBuilder.Append(value);
             if (value.EndsWith(this.DumpOptions.LineBreakChar))
             {

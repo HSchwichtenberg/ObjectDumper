@@ -21,16 +21,19 @@ public class DumpOptions
         this.CustomTypeFormatter = new Dictionary<Type, Func<Type, string>>();
         this.CustomInstanceFormatters = new CustomInstanceFormatters();
         this.TrimInitialVariableName = false;
-        this.ToStringAtMaxLevel = false;
+        this.ToStringAtMaxLevel = true;
+        this.IncludeClassNames = true;
     }
 
     public bool ToStringAtMaxLevel { get; set; }
+
+    public bool IncludeClassNames { get; set; }
 
     public DumpStyle DumpStyle { get; set; }
 
     public int IndentSize { get; set; }
 
-    public char IndentChar { get; set; }
+    public char? IndentChar { get; set; }
 
     public string LineBreakChar { get; set; }
 

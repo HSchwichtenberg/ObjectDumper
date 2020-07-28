@@ -3,6 +3,7 @@ using System.Collections;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace ObjectDumping.Internal
 {
@@ -28,12 +29,20 @@ namespace ObjectDumping.Internal
 
         private string DumpElement(object element)
         {
-            if (this.Level > this.DumpOptions.MaxLevel)
+            if (this.DumpOptions.MaxLevel == 0)
+            {
+                var classname = GetClassName(element);
+                if (element.GetType().FullName == element.ToString()) return classname;
+
+                return classname + "= " + element.ToString();
+            }
+
+            if (this.Level >= this.DumpOptions.MaxLevel)
             {
                 return this.ToString();
             }
 
-            if (element == null || element is ValueType || element is string)
+            if (element == null || element is string)
             {
                 this.Write(this.FormatValue(element));
             }
@@ -42,10 +51,16 @@ namespace ObjectDumping.Internal
                 var objectType = element.GetType();
                 if (!typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(objectType.GetTypeInfo()))
                 {
-                    this.Write(GetClassName(element));
-                    this.LineBreak();
-                    this.AddAlreadyTouched(element);
+                    var classname = GetClassName(element);
+                    if (classname != null)
+                    {
+                        this.Write(classname);
+                        this.LineBreak();
+                     
+                    }
                     this.Level++;
+                    this.AddAlreadyTouched(element);
+                    
                 }
 
                 if (element is IEnumerable enumerable)
@@ -66,8 +81,12 @@ namespace ObjectDumping.Internal
                             }
                             else
                             {
-                                this.Write($"{GetClassName(element)} <-- bidirectional reference found");
-                                this.LineBreak();
+                                var classname = GetClassName(element);
+                                if (classname != null)
+                                {
+                                    this.Write($"{GetClassName(element)} <-- bidirectional reference found");
+                                    this.LineBreak();
+                                }
                             }
                         }
 
@@ -164,7 +183,7 @@ namespace ObjectDumping.Internal
                             var isEnumerable = typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo());
 
                             string objectValue = " ";
-                            if (this.DumpOptions.ToStringAtMaxLevel && this.DumpOptions.MaxLevel == this.Level) objectValue = value.ToString();
+                            if (this.DumpOptions.ToStringAtMaxLevel && this.DumpOptions.MaxLevel == this.Level) objectValue = value?.ToString();
 
                             this.Write($"{propertyInfo.Name}: {(isEnumerable ? "..." : (value != null ? "{" + objectValue + "}" : "null"))}");
 
@@ -184,7 +203,7 @@ namespace ObjectDumping.Internal
                                     this.LineBreak();
                                 }
 
-                                this.Level--;
+                                if (this.Level > 0) this.Level--;
                             }
                         }
                     }
@@ -192,7 +211,7 @@ namespace ObjectDumping.Internal
 
                 if (!typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(objectType.GetTypeInfo()))
                 {
-                    this.Level--;
+                    if (this.Level > 0) this.Level--;
                 }
             }
 
@@ -220,7 +239,7 @@ namespace ObjectDumping.Internal
             {
                 return o.ToString();
             }
-            
+
             if (o is CultureInfo)
             {
                 return o.ToString();
@@ -234,8 +253,9 @@ namespace ObjectDumping.Internal
             return "{ }";
         }
 
-        private static string GetClassName(object element)
+        private string GetClassName(object element)
         {
+            if (!this.DumpOptions.IncludeClassNames) return null;
             var type = element.GetType();
             var className = type.GetFormattedName(useFullName: true);
             return $"{{{className}}}";
