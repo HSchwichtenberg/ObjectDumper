@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-
+using ITVisions;
 namespace ObjectDumping.Internal
 {
     /// <summary>
@@ -42,7 +42,7 @@ namespace ObjectDumping.Internal
                 return this.ToString();
             }
 
-            if (element == null || element is string)
+            if (element == null || (element is ValueType && !this.DumpOptions.DetailsForValueTypes) || element is string)
             {
                 this.Write(this.FormatValue(element));
             }
@@ -173,7 +173,7 @@ namespace ObjectDumping.Internal
                         var type = propertyInfo.PropertyType;
                         var value = propertyInfo.TryGetValue(element);
 
-                        if (type.GetTypeInfo().IsValueType || type == typeof(string))
+                        if ((type.GetTypeInfo().IsValueType && !this.DumpOptions.DetailsForValueTypes) || type == typeof(string))
                         {
                             this.Write($"{propertyInfo.Name}: {this.FormatValue(value)}");
                             this.LineBreak();
@@ -183,7 +183,8 @@ namespace ObjectDumping.Internal
                             var isEnumerable = typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo());
 
                             string objectValue = " ";
-                            if (this.DumpOptions.ToStringAtMaxLevel && this.DumpOptions.MaxLevel == this.Level) objectValue = value?.ToString();
+                            if (this.DumpOptions.ToStringAtMaxLevel && this.DumpOptions.MaxLevel == this.Level)
+                            { objectValue = value?.ToString(); }
 
                             this.Write($"{propertyInfo.Name}: {(isEnumerable ? "..." : (value != null ? "{" + objectValue + "}" : "null"))}");
 

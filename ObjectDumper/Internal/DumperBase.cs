@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
-
+using ITVisions;
 namespace ObjectDumping.Internal
 {
     public abstract class DumperBase

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-
+using ITVisions;
 namespace ObjectDumping.Internal
 {
     /// <summary>
