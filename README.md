@@ -5,15 +5,7 @@
 
 ObjectDumper is a utility which aims to serialize C# objects to string for debugging and logging purposes.
 
-This is a fork with some improvements (e.g. dumping of value types).
-
-### Download and Install ObjectDumper.NET
-This library is available on NuGet: https://www.nuget.org/packages/ObjectDumper.NET/
-Use the following command to install ObjectDumper using NuGet package manager console:
-
-    PM> Install-Package ObjectDumper.NET
-
-You can use this library in any .Net project which is compatible to PCL (e.g. Xamarin Android, iOS, Windows Phone, Windows Store, Universal Apps, etc.)
+<strong>This is a fork with some improvements (e.g. dumping of value types). This version is NOT available on NuGet!</strong>
 
 ### The Purpose of ObjectDumper
 Serialization, the process of converting a complex object to a machine-readable or over-the-wire transmittable string, is a technique often used in software engineering. A well-known serializer is Newtonsoft.JSON which serializes .NET objects to the data representation format JSON.
