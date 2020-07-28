@@ -21,7 +21,10 @@ public class DumpOptions
         this.CustomTypeFormatter = new Dictionary<Type, Func<Type, string>>();
         this.CustomInstanceFormatters = new CustomInstanceFormatters();
         this.TrimInitialVariableName = false;
+        this.ToStringAtMaxLevel = false;
     }
+
+    public bool ToStringAtMaxLevel { get; set; }
 
     public DumpStyle DumpStyle { get; set; }
 

@@ -162,7 +162,12 @@ namespace ObjectDumping.Internal
                         else
                         {
                             var isEnumerable = typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo());
-                            this.Write($"{propertyInfo.Name}: {(isEnumerable ? "..." : (value != null ? "{ }" : "null"))}");
+
+                            string objectValue = " ";
+                            if (this.DumpOptions.ToStringAtMaxLevel && this.DumpOptions.MaxLevel == this.Level) objectValue = value.ToString();
+
+                            this.Write($"{propertyInfo.Name}: {(isEnumerable ? "..." : (value != null ? "{" + objectValue + "}" : "null"))}");
+
                             this.LineBreak();
 
                             if (value != null)
