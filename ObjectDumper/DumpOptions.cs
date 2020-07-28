@@ -24,9 +24,25 @@ namespace ITVisions
             this.TrimInitialVariableName = false;
             this.ToStringAtMaxLevel = true;
             this.IncludeClassNames = true;
-            this.DetailsForValueTypes = false;
+            this.DetailsForValueTypes = true;
+            this.ExcludeDetailsForTypes = new List<string>() { 
+                typeof(System.Uri).FullName, 
+                typeof(System.Int32).FullName,
+                typeof(System.Int32).FullName,
+                typeof(System.Int16).FullName,
+                typeof(System.Byte).FullName,
+                typeof(System.Int64).FullName,
+                typeof(System.Char).FullName,
+                typeof(System.Boolean).FullName,
+                typeof(System.Decimal).FullName,
+                typeof(System.Single).FullName,
+                typeof(System.Double).FullName,
+                typeof(System.DateTime).FullName,
+                typeof(System.TimeSpan).FullName };
         }
 
+
+        public List<string> ExcludeDetailsForTypes { get; set; }
         public bool ToStringAtMaxLevel { get; set; }
 
         public bool IncludeClassNames { get; set; }

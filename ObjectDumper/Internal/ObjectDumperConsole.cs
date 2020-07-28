@@ -29,7 +29,7 @@ namespace ObjectDumping.Internal
 
         private string DumpElement(object element)
         {
-            if (this.DumpOptions.MaxLevel == 0)
+            if (this.DumpOptions.MaxLevel == 0 || this.DumpOptions.ExcludeDetailsForTypes.Contains(element.GetType().FullName))
             {
                 var classname = GetClassName(element);
                 if (element.GetType().FullName == element.ToString()) return classname;
@@ -100,7 +100,7 @@ namespace ObjectDumping.Internal
                     {
                         var value = fieldInfo.TryGetValue(element);
 
-                        if (fieldInfo.FieldType.GetTypeInfo().IsValueType || fieldInfo.FieldType == typeof(string))
+                        if ((fieldInfo.FieldType.GetTypeInfo().IsValueType && this.DumpOptions.DetailsForValueTypes) || fieldInfo.FieldType == typeof(string))
                         {
                             this.Write($"{fieldInfo.Name}: {this.FormatValue(value)}");
                             this.LineBreak();
@@ -183,10 +183,21 @@ namespace ObjectDumping.Internal
                             var isEnumerable = typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(type.GetTypeInfo());
 
                             string objectValue = " ";
-                            if (this.DumpOptions.ToStringAtMaxLevel && this.DumpOptions.MaxLevel == this.Level)
-                            { objectValue = value?.ToString(); }
 
-                            this.Write($"{propertyInfo.Name}: {(isEnumerable ? "..." : (value != null ? "{" + objectValue + "}" : "null"))}");
+                            if (this.DumpOptions.ExcludeDetailsForTypes.Contains(propertyInfo.PropertyType.FullName))
+                            {
+                                objectValue = value?.ToString();
+                            }
+                            else
+                            {
+                                if ((this.DumpOptions.ToStringAtMaxLevel && this.DumpOptions.MaxLevel == this.Level))
+                                {
+                                    objectValue = "{" + value?.ToString() + "}";
+                                }
+                            }
+                   
+                                                    
+                            this.Write($"{propertyInfo.Name}: {(isEnumerable ? "..." : (value != null ? objectValue : "null"))}");
 
                             this.LineBreak();
 
