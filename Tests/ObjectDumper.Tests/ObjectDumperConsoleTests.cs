@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using FluentAssertions;
+using ITVisions;
 using ObjectDumping.Internal;
 using ObjectDumping.Tests.Testdata;
 using ObjectDumping.Tests.Utils;

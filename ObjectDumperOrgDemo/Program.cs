@@ -18,7 +18,7 @@ namespace ObjectDumperOrgDemo
     {
         public string Name { get; set; }
         public Uri Website { get; set; }
-        public int Geburtsjahr { get; set; }
+        public int Geburtsjahr;
         public List<Knowhow> KnowhowSet { get; set; }
         public Firma Firma { get; set; }
 
